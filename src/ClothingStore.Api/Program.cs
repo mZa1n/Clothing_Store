@@ -13,6 +13,8 @@ builder.Services.AddDbContext<StoreDb>(options => options.UseNpgsql(
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<StoreExceptionHandler>();
 builder.AddAccounts();
+builder.Services.AddScoped<StockBalance>();
+builder.Services.AddScoped<OrderService>();
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddControllers(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
     .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(
