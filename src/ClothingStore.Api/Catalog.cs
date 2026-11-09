@@ -38,7 +38,7 @@ public static class CatalogQueries
     public static async Task<object?> Detail(StoreDb db, int id, bool staff, CancellationToken ct)
     {
         var products = staff ? db.Products.AsQueryable() : db.Products.Published();
-        return await products.Where(p => p.Id == id).Select(p => new
+        return await products.AsSplitQuery().Where(p => p.Id == id).Select(p => new
         {
             p.Id, p.Name, p.Description, p.ImageUrl, p.Price, p.Active,
             category = new { p.Category.Id, p.Category.Name },

@@ -43,7 +43,6 @@ public sealed class AuthController(
     IAntiforgery antiforgery) : ControllerBase
 {
     [HttpGet("csrf")]
-    [ResponseCache(NoStore = true)]
     public IActionResult Csrf() => Ok(new { token = antiforgery.GetAndStoreTokens(HttpContext).RequestToken });
 
     [HttpPost("register")]
