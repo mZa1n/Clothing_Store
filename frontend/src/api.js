@@ -44,7 +44,11 @@ async function send(path, { method = 'GET', body, signal, headers = {} } = {}) {
   const json = response.headers.get('Content-Type')?.includes('json');
   const data = json ? await response.json() : null;
   if (!response.ok) {
-    if (response.status === 401) clearCsrf();
+    if (response.status === 401) {
+      clearCsrf();
+      if (path !== '/auth/login' && path !== '/auth/me')
+        window.dispatchEvent(new Event('clothing-session-expired'));
+    }
     throw new ApiError(response.status, data);
   }
   if (response.status !== 204 && !json) throw new ApiError(502);

@@ -42,16 +42,16 @@ export function Catalog() {
 
     <section className="catalog-body" id="catalog" aria-labelledby="catalog-title">
       <div className="section-heading"><h2 id="catalog-title">Каталог</h2></div>
-      <form className="filter-panel" key={search.toString() + Boolean(filters.data)} onSubmit={apply}>
+      <form className="filter-panel" key={search.toString()} onSubmit={apply}>
         <div className="filter-grid">
           <Field name="search" label="Поиск" type="search" maxLength={120} placeholder="Название или артикул" defaultValue={search.get('search') ?? ''} />
-          <Field name="categoryId" label="Категория" defaultValue={search.get('categoryId') ?? ''}
+          <Field key={'categoryId' + Boolean(filters.data)} name="categoryId" label="Категория" defaultValue={search.get('categoryId') ?? ''}
             options={recordOptions(filters.data?.categories)} placeholder="Все" />
-          <Field name="manufacturerId" label="Производитель" defaultValue={search.get('manufacturerId') ?? ''}
+          <Field key={'manufacturerId' + Boolean(filters.data)} name="manufacturerId" label="Производитель" defaultValue={search.get('manufacturerId') ?? ''}
             options={recordOptions(filters.data?.manufacturers)} placeholder="Все" />
-          <Field name="size" label="Размер" defaultValue={search.get('size') ?? ''}
+          <Field key={'size' + Boolean(filters.data)} name="size" label="Размер" defaultValue={search.get('size') ?? ''}
             options={textOptions(filters.data?.sizes)} placeholder="Все" />
-          <Field name="color" label="Цвет" defaultValue={search.get('color') ?? ''}
+          <Field key={'color' + Boolean(filters.data)} name="color" label="Цвет" defaultValue={search.get('color') ?? ''}
             options={textOptions(filters.data?.colors)} placeholder="Все" />
         </div>
         <div className="actions"><button className="button primary">Найти</button>

@@ -1,11 +1,15 @@
 import { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Link, NavLink, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Link, Navigate, NavLink, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { Cart, Checkout, Profile } from './buyer';
 import { Catalog, Product } from './catalog';
 import { Login } from './login';
 import { Order, Orders } from './orders';
-import { Guard, SessionProvider, canShop, useSession } from './session';
+import { Guard, SessionProvider, canManage, canShop, isAdmin, useSession } from './session';
+import { Management, ManageAccounts } from './staff';
+import { ProductEditor, References, StaffCatalog } from './staff-catalog';
+import { Stock } from './staff-inventory';
+import { SalesReports } from './staff-reports';
 import { ErrorMessage, useAction } from './ui';
 import './styles.css';
 
@@ -22,6 +26,7 @@ function Header() {
           <NavLink to="/cart">Корзина</NavLink>
           <NavLink to="/orders">Мои заказы</NavLink>
         </>}
+        {canManage(account) && <NavLink to="/management">Управление</NavLink>}
         {account && <NavLink to="/profile">Профиль</NavLink>}
         {account
           ? <button type="button" className="nav-button" disabled={action.pending}
@@ -36,8 +41,10 @@ function Header() {
 function App() {
   const { pathname, hash } = useLocation();
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  useEffect(() => {
     if (hash === '#catalog') document.getElementById('catalog')?.scrollIntoView();
-    else window.scrollTo(0, 0);
   }, [pathname, hash]);
 
   return <>
@@ -54,6 +61,19 @@ function App() {
         <Route path="/orders" element={<Guard allow={canShop}><Orders /></Guard>} />
         <Route path="/orders/:id" element={<Guard allow={canShop}><Order /></Guard>} />
         <Route path="/profile" element={<Guard><Profile /></Guard>} />
+        <Route path="/management" element={<Guard allow={canManage}><Management /></Guard>}>
+          <Route index element={<Navigate to="orders" replace />} />
+          <Route path="orders" element={<Orders staff />} />
+          <Route path="orders/:id" element={<Order staff />} />
+          <Route path="catalog" element={<StaffCatalog />} />
+          <Route path="catalog/references" element={<References />} />
+          <Route path="catalog/new" element={<ProductEditor />} />
+          <Route path="catalog/:id" element={<ProductEditor />} />
+          <Route path="inventory" element={<Stock />} />
+          <Route path="reports" element={<SalesReports key="staff" />} />
+          <Route path="accounts" element={<Guard allow={isAdmin}><ManageAccounts /></Guard>} />
+          <Route path="comparison" element={<Guard allow={isAdmin}><SalesReports key="admin" compare /></Guard>} />
+        </Route>
         <Route path="*" element={<div className="empty"><h1>Страница не найдена</h1><Link to="/">Открыть каталог</Link></div>} />
       </Routes>
     </main>

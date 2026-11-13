@@ -24,6 +24,12 @@ export function SessionProvider({ children }) {
     return () => controller.abort();
   }, [attempt]);
 
+  useEffect(() => {
+    const expire = () => setState({ account: null });
+    window.addEventListener('clothing-session-expired', expire);
+    return () => window.removeEventListener('clothing-session-expired', expire);
+  }, []);
+
   async function login(credentials) {
     clearCsrf();
     const account = await api('/auth/login', { method: 'POST', body: credentials });
