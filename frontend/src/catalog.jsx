@@ -10,7 +10,7 @@ const pageSize = 12;
 
 export function Catalog() {
   const [search, setSearch] = useSearchParams();
-  const page = Math.max(1, Number(search.get('page')) || 1);
+  const page = Math.min(100000, Math.max(1, Math.trunc(Number(search.get('page'))) || 1));
   const filters = useResource('/catalog/filters');
   const products = useResource(query('/catalog/products', {
     search: search.get('search'), categoryId: search.get('categoryId'),
@@ -42,7 +42,7 @@ export function Catalog() {
 
     <section className="catalog-body" id="catalog" aria-labelledby="catalog-title">
       <div className="section-heading"><h2 id="catalog-title">Каталог</h2></div>
-      <form className="filter-panel" key={search.toString()} onSubmit={apply}>
+      <form className="filter-panel" key={search.toString() + Boolean(filters.data)} onSubmit={apply}>
         <div className="filter-grid">
           <Field name="search" label="Поиск" type="search" maxLength={120} placeholder="Название или артикул" defaultValue={search.get('search') ?? ''} />
           <Field name="categoryId" label="Категория" defaultValue={search.get('categoryId') ?? ''}

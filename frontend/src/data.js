@@ -16,7 +16,7 @@ export function useResource(path) {
     return () => controller.abort();
   }, [path, revision]);
 
-  const current = snapshot?.path === path && snapshot.revision === revision ? snapshot : null;
+  const current = snapshot && snapshot.path === path && snapshot.revision === revision ? snapshot : null;
   return {
     data: current?.data,
     error: current?.error,
